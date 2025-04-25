@@ -8,7 +8,6 @@ export function TranscriptionBubble({
   segment,
   isOddSpeaker,
   isFirstInSequence,
-  isLastInSequence,
   isActive,
 }: TranscriptionBubbleProps) {
   const emotion = segment.emotion ? getEmotionText(segment.emotion) : null;

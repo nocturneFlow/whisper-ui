@@ -96,7 +96,7 @@ export default function DemoPage() {
   const [transcriptionResult, setTranscriptionResult] =
     useState<TranscribeDemoResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [activeSegment, setActiveSegment] = useState<number | null>(null);
+  const [activeSegment] = useState<number | null>(null);
 
   const router = useRouter();
 
@@ -112,7 +112,8 @@ export default function DemoPage() {
           "Нет данных транскрибации. Пожалуйста, загрузите файл на главной странице."
         );
       }
-    } catch (err) {
+    } catch {
+      // Intentionally ignore the specific error details
       setError(
         "Ошибка при получении результатов транскрибации. Пожалуйста, попробуйте снова."
       );

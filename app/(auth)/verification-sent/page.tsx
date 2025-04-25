@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -88,7 +88,7 @@ function CountdownTimer({ seconds, onComplete }: CountdownTimerProps) {
   );
 }
 
-export default function VerificationSent() {
+function VerificationSentContent() {
   // Get email from URL query params
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "anastasia@example.com";
@@ -176,7 +176,7 @@ export default function VerificationSent() {
                   <path
                     className="opacity-75"
                     fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
                 Отправка...
@@ -200,5 +200,19 @@ export default function VerificationSent() {
         </CardFooter>
       </Card>
     </AuthPanel>
+  );
+}
+
+export default function VerificationSent() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-pulse text-primary">Loading...</div>
+        </div>
+      }
+    >
+      <VerificationSentContent />
+    </Suspense>
   );
 }

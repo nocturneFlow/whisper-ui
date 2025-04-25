@@ -22,9 +22,6 @@ import {
 import { useHapticFeedback } from "@/components/ui/haptics";
 import { AuthPanel } from "@/components/auth/auth-panel";
 
-// Types
-import type { ResetPasswordData } from "@/lib/auth-types";
-
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);

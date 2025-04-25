@@ -18,8 +18,6 @@ export function ChatView({
   transcriptionResult,
   activeSegment,
   isPlaying,
-  getSpeakerGradient,
-  getSpeakerName,
 }: ChatViewProps) {
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 

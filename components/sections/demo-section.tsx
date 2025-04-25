@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useState, useRef } from "react";
-import { TranscribeDemoResponse } from "@/types/transcribe";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useRouter } from "next/navigation";
 
@@ -97,14 +96,6 @@ export function DemoSection() {
       );
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const resetDemo = () => {
-    setFile(null);
-    setError(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
     }
   };
 

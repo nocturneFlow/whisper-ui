@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-
 type FeedbackType = "success" | "error" | "warning" | "info" | "click";
 
 /**

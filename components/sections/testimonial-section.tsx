@@ -64,10 +64,10 @@ export function TestimonialSection() {
                 ))}
               </div>
               <p className="text-base sm:text-lg md:text-xl italic">
-                "Whisper UI радикально изменил способ обработки интервью на
-                казахском языке. Точность превосходит все, что я использовал
+                &ldquo;Whisper UI радикально изменил способ обработки интервью
+                на казахском языке. Точность превосходит все, что я использовал
                 ранее, а функция диаризации особенно полезна при работе с
-                групповыми обсуждениями."
+                групповыми обсуждениями.&rdquo;
               </p>
               <footer className="text-xs sm:text-sm text-muted-foreground">
                 <div className="font-medium">Айгуль Нурланова</div>

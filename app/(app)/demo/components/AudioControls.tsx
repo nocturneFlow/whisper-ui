@@ -8,7 +8,6 @@ import { AudioControlsProps } from "../utils/types";
 import { formatTime } from "../utils/helpers";
 
 export function AudioControls({
-  audioRef,
   audioLoaded,
   isPlaying,
   audioPosition,

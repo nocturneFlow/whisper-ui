@@ -5,12 +5,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, UserRound, Waves } from "lucide-react";
 import { useFoldDetection } from "@/hooks/use-fold-detection";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 
 export function HeroSection() {
   const isFolded = useFoldDetection();
-  const isMobile = useMediaQuery("(max-width: 640px)");
 
   // Mouse tracking for 3D effect
   const mouseX = useMotionValue(0);

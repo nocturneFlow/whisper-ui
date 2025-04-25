@@ -3,7 +3,9 @@
  */
 
 export interface AuthFormProps {
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (
+    data: SignInCredentials | SignUpData | ResetPasswordData
+  ) => Promise<void>;
 }
 
 export interface AuthState {

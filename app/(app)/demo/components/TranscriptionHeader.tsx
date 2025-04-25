@@ -9,7 +9,6 @@ import { TranscriptionHeaderProps } from "../utils/types";
 export function TranscriptionHeader({
   transcriptionResult,
   goBack,
-  getSpeakerName,
   getEmotionText,
   formatTime,
 }: TranscriptionHeaderProps) {
