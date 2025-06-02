@@ -3,78 +3,152 @@
 import * as React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Quote, ArrowRight } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { motion, useInView } from "framer-motion";
 
 export function TestimonialSection() {
   const isMobile = useMediaQuery("(max-width: 640px)");
+  const sectionRef = React.useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+
+  const testimonials = [
+    {
+      quote:
+        "Whisper UI радикально изменил способ обработки интервью на казахском языке. Точность превосходит все, что я использовал ранее, а функция диаризации особенно полезна при работе с групповыми обсуждениями.",
+      author: "Айгуль Нурланова",
+      role: "Журналист, Казахстанская правда",
+    },
+  ];
 
   return (
-    <section className="w-full py-8 sm:py-12 md:py-24 overflow-hidden">
-      <div className="container px-4 md:px-6 mx-auto">
-        <div className="grid gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px] max-w-full lg:max-w-7xl mx-auto">
-          <div className="flex flex-col justify-center space-y-3 sm:space-y-4">
-            <div className="inline-flex h-6 items-center rounded-full border border-primary/20 bg-primary/5 px-3 text-sm font-medium text-primary">
-              Отзывы пользователей
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tighter md:text-5xl">
-              Используют эксперты и обычные пользователи
-            </h2>
-            <p className="max-w-[600px] text-sm sm:text-base text-muted-foreground md:text-lg">
+    <section
+      ref={sectionRef}
+      className="relative w-full py-16 sm:py-24 md:py-32 bg-white overflow-hidden border-t-2 border-black"
+    >
+      {/* Swiss Grid Overlay */}
+      <div className="absolute inset-0 opacity-[0.02]">
+        <div
+          className="h-full w-full"
+          style={{
+            backgroundImage: `
+            linear-gradient(to right, #000 1px, transparent 1px),
+            linear-gradient(to bottom, #000 1px, transparent 1px)
+          `,
+            backgroundSize: "24px 24px",
+          }}
+        />
+      </div>
+
+      <div className="container relative z-10 px-6 mx-auto max-w-7xl">
+        <div className="grid gap-12 lg:grid-cols-[1fr_500px] lg:gap-16 xl:grid-cols-[1fr_550px]">
+          <div className="flex flex-col justify-center">
+            {/* Swiss-style badge */}
+            <motion.div
+              className="inline-flex items-center border-2 border-black bg-black text-white px-4 py-2 text-xs font-mono uppercase tracking-wider w-fit mb-6"
+              initial={{ opacity: 0, x: -20 }}
+              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <span>ОТЗЫВЫ</span>
+            </motion.div>
+
+            <motion.h2
+              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-black font-mono mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              МНЕНИЯ НАШИХ
+              <br />
+              ПОЛЬЗОВАТЕЛЕЙ
+            </motion.h2>
+
+            <motion.div
+              className="h-1 w-16 bg-black mb-6"
+              initial={{ width: 0 }}
+              animate={isInView ? { width: 64 } : { width: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            />
+
+            <motion.p
+              className="text-lg font-mono text-black/80 max-w-2xl mb-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
               Whisper UI уже помогает лингвистам, журналистам, исследователям и
               студентам в работе с казахской речью.
-            </p>
-            <div className="flex flex-col gap-2 min-[400px]:flex-row">
+            </motion.p>
+
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
               <Button
-                size={isMobile ? "default" : "default"}
                 asChild
-                className="gap-2"
+                className="bg-black text-white hover:bg-black/90 border-0 font-mono uppercase tracking-wider text-sm h-12 px-8"
               >
-                <Link href="/app">Попробовать бесплатно</Link>
-              </Button>
-              <Button
-                size={isMobile ? "default" : "default"}
-                variant="outline"
-                asChild
-              >
-                <Link href="/case-studies">
-                  Истории успеха
-                  <ExternalLink className="ml-1.5 h-4 w-4" />
+                <Link href="/app">
+                  <motion.span
+                    className="flex items-center"
+                    whileHover={{ x: 2 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  >
+                    ПОПРОБОВАТЬ
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </motion.span>
                 </Link>
               </Button>
-            </div>
+              <Button
+                variant="outline"
+                asChild
+                className="border-2 border-black text-black hover:bg-black hover:text-white font-mono uppercase tracking-wider text-sm h-12 px-8"
+              >
+                <Link href="/case-studies">
+                  <span className="flex items-center">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    ИСТОРИИ УСПЕХА
+                  </span>
+                </Link>
+              </Button>
+            </motion.div>
           </div>
-          <div className="flex items-center justify-center lg:justify-end mt-6 lg:mt-0">
-            <blockquote className="space-y-2 bg-muted p-4 sm:p-6 rounded-lg border shadow-sm w-full max-w-[500px]">
-              <div className="flex gap-1 sm:gap-2 text-yellow-500">
-                {[...Array(5)].map((_, i) => (
-                  <svg
-                    key={i}
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="h-4 w-4 sm:h-5 sm:w-5"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                ))}
+
+          {/* Testimonial */}
+          <motion.div
+            className="mt-6 lg:mt-0 h-full"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={
+              isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }
+            }
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <div className="border-2 border-black bg-white p-6 h-full relative">
+              <Quote className="h-10 w-10 text-black/20 absolute top-4 left-4" />
+
+              <div className="pt-6 pb-2 pl-4">
+                <p className="text-lg font-mono text-black leading-relaxed mb-8">
+                  "{testimonials[0].quote}"
+                </p>
+
+                <div className="border-t-2 border-black/10 pt-4">
+                  <div className="font-mono font-bold text-black">
+                    {testimonials[0].author}
+                  </div>
+                  <div className="font-mono text-sm text-black/60">
+                    {testimonials[0].role}
+                  </div>
+                </div>
               </div>
-              <p className="text-base sm:text-lg md:text-xl italic">
-                &ldquo;Whisper UI радикально изменил способ обработки интервью
-                на казахском языке. Точность превосходит все, что я использовал
-                ранее, а функция диаризации особенно полезна при работе с
-                групповыми обсуждениями.&rdquo;
-              </p>
-              <footer className="text-xs sm:text-sm text-muted-foreground">
-                <div className="font-medium">Айгуль Нурланова</div>
-                <div>Журналист, Казахстанская правда</div>
-              </footer>
-            </blockquote>
-          </div>
+
+              <div className="absolute bottom-0 right-0 w-16 h-16 border-t-2 border-l-2 border-black flex items-center justify-center bg-black text-white">
+                <div className="font-mono font-bold text-2xl">5.0</div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

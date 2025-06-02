@@ -1,76 +1,117 @@
 "use client";
 
 import * as React from "react";
+import { motion, useInView } from "framer-motion";
+import { FileAudio, Settings, FileText } from "lucide-react";
 
 export function HowItWorksSection() {
+  const sectionRef = React.useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+
+  const steps = [
+    {
+      icon: <FileAudio className="h-6 w-6" />,
+      title: "ЗАГРУЗИТЕ МЕДИАФАЙЛ",
+      description: "Загрузите аудио/видео файл или вставьте ссылку на YouTube",
+    },
+    {
+      icon: <Settings className="h-6 w-6" />,
+      title: "НАСТРОЙТЕ ПАРАМЕТРЫ",
+      description: "Выберите нужные опции анализа и формат вывода результатов",
+    },
+    {
+      icon: <FileText className="h-6 w-6" />,
+      title: "ПОЛУЧИТЕ РЕЗУЛЬТАТЫ",
+      description: "Просмотрите и скачайте готовую транскрипцию с метаданными",
+    },
+  ];
+
   return (
-    <section className="w-full py-8 sm:py-12 md:py-24 overflow-hidden">
-      <div className="container px-4 md:px-6 mx-auto">
-        <div className="flex flex-col items-center justify-center space-y-3 sm:space-y-4 text-center mb-6 sm:mb-10 max-w-3xl mx-auto">
-          <div className="inline-flex h-6 items-center rounded-full border border-primary/20 bg-primary/5 px-3 text-sm font-medium text-primary">
-            Как это работает
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tighter md:text-4xl">
-            Три простых шага
-          </h2>
-          <p className="max-w-[700px] text-sm sm:text-base text-muted-foreground md:text-lg">
+    <section
+      ref={sectionRef}
+      className="relative w-full py-16 sm:py-24 md:py-32 bg-white overflow-hidden border-t-2 border-black"
+    >
+      {/* Swiss Grid Overlay */}
+      <div className="absolute inset-0 opacity-[0.02]">
+        <div
+          className="h-full w-full"
+          style={{
+            backgroundImage: `
+            linear-gradient(to right, #000 1px, transparent 1px),
+            linear-gradient(to bottom, #000 1px, transparent 1px)
+          `,
+            backgroundSize: "24px 24px",
+          }}
+        />
+      </div>
+
+      <div className="container relative z-10 px-6 mx-auto max-w-7xl">
+        <div className="flex flex-col mb-16">
+          {/* Swiss-style badge */}
+          <motion.div
+            className="inline-flex items-center border-2 border-black bg-black text-white px-4 py-2 text-xs font-mono uppercase tracking-wider w-fit mb-6"
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <span>ПРОЦЕСС</span>
+          </motion.div>
+
+          <motion.h2
+            className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-black font-mono mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            ТРИ ПРОСТЫХ ШАГА
+          </motion.h2>
+
+          <motion.div
+            className="h-1 w-16 bg-black mb-6"
+            initial={{ width: 0 }}
+            animate={isInView ? { width: 64 } : { width: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          />
+
+          <motion.p
+            className="text-lg font-mono text-black/80 max-w-2xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
             Получите качественную транскрипцию казахской речи за считанные
             минуты
-          </p>
+          </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-6 sm:mt-10 max-w-full sm:max-w-6xl mx-auto">
-          <div className="relative flex flex-col items-center">
-            <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-primary text-primary-foreground mb-3 sm:mb-4 z-10">
-              <span className="text-xl sm:text-2xl font-bold">1</span>
-            </div>
-            {/* Connector line - visible only on larger screens */}
-            <div
-              className="absolute top-6 sm:top-8 left-1/2 h-0.5 w-full bg-primary/30 hidden sm:block"
-              style={{ transform: "translateX(50%)" }}
-            />
-            <h3 className="text-lg sm:text-xl font-bold mb-2">
-              Загрузите медиафайл
-            </h3>
-            <p className="text-center text-sm sm:text-base text-muted-foreground">
-              Загрузите аудио/видео файл или вставьте ссылку на YouTube
-            </p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-10 relative">
+          {steps.map((step, index) => (
+            <motion.div
+              key={index}
+              className="relative z-10"
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 0.2 + index * 0.2 }}
+            >
+              {/* Step number */}
+              <div className="absolute -top-8 -left-2 font-mono text-6xl font-bold opacity-10">
+                {index + 1}
+              </div>
 
-          <div className="relative flex flex-col items-center">
-            {/* Mobile step connector */}
-            <div className="sm:hidden h-6 w-0.5 bg-primary/30 absolute -top-8 left-1/2 transform -translate-x-1/2"></div>
-
-            <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-primary text-primary-foreground mb-3 sm:mb-4 z-10">
-              <span className="text-xl sm:text-2xl font-bold">2</span>
-            </div>
-            {/* Connector line - visible only on larger screens */}
-            <div
-              className="absolute top-6 sm:top-8 left-1/2 h-0.5 w-full bg-primary/30 hidden sm:block"
-              style={{ transform: "translateX(50%)" }}
-            />
-            <h3 className="text-lg sm:text-xl font-bold mb-2">
-              Настройте параметры
-            </h3>
-            <p className="text-center text-sm sm:text-base text-muted-foreground">
-              Выберите нужные опции анализа и формат вывода результатов
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center relative">
-            {/* Mobile step connector */}
-            <div className="sm:hidden h-6 w-0.5 bg-primary/30 absolute -top-8 left-1/2 transform -translate-x-1/2"></div>
-
-            <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-primary text-primary-foreground mb-3 sm:mb-4">
-              <span className="text-xl sm:text-2xl font-bold">3</span>
-            </div>
-            <h3 className="text-lg sm:text-xl font-bold mb-2">
-              Получите результаты
-            </h3>
-            <p className="text-center text-sm sm:text-base text-muted-foreground">
-              Просмотрите и скачайте готовую транскрипцию с метаданными
-            </p>
-          </div>
+              {/* Step content */}
+              <div className="border-2 border-black bg-white p-6 h-full relative">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center border-2 border-black bg-black text-white">
+                  {step.icon}
+                </div>
+                <h3 className="font-mono text-lg font-bold tracking-tight text-black mb-3">
+                  {step.title}
+                </h3>
+                <p className="font-mono text-sm text-black/80">
+                  {step.description}
+                </p>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

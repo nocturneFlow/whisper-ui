@@ -2,13 +2,6 @@
 
 import * as React from "react";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   UserRound,
   BarChart2,
   Youtube,
@@ -16,12 +9,14 @@ import {
   FileText,
   Globe,
 } from "lucide-react";
+import { motion, useInView } from "framer-motion";
 
 type FeatureCardProps = {
   icon: React.ReactNode;
   title: string;
   description: string;
   points: string[];
+  index: number;
 };
 
 const FeatureCard = ({
@@ -29,32 +24,57 @@ const FeatureCard = ({
   title,
   description,
   points,
-}: FeatureCardProps) => (
-  <Card className="transition-all hover:shadow-lg hover:border-primary/50">
-    <CardHeader className="pb-3 sm:pb-4">
-      <div className="mb-3 sm:mb-4 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-primary/10">
-        {icon}
+  index,
+}: FeatureCardProps) => {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      className="border-2 border-black bg-white p-5 h-full"
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      whileHover={{
+        boxShadow: "5px 5px 0px 0px rgba(0,0,0,1)",
+        translateY: -2,
+      }}
+    >
+      <div className="mb-4 flex h-10 w-10 items-center justify-center border-2 border-black bg-black">
+        <div className="text-white">{icon}</div>
       </div>
-      <CardTitle className="text-base sm:text-lg">{title}</CardTitle>
-      <CardDescription className="text-xs sm:text-sm">
-        {description}
-      </CardDescription>
-    </CardHeader>
-    <CardContent>
-      <ul className="text-xs sm:text-sm text-muted-foreground space-y-1.5 sm:space-y-2 list-disc pl-5">
-        {points.map((point, index) => (
-          <li key={index}>{point}</li>
+      <h3 className="font-mono text-lg font-bold tracking-tight text-black mb-2">
+        {title}
+      </h3>
+      <p className="font-mono text-sm text-black/80 mb-4">{description}</p>
+      <ul className="space-y-2 font-mono">
+        {points.map((point, idx) => (
+          <li key={idx} className="flex items-start">
+            <motion.span
+              className="mr-2 text-xs"
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ delay: index * 0.1 + idx * 0.1 + 0.3 }}
+            >
+              ◆
+            </motion.span>
+            <span className="text-xs text-black/80">{point}</span>
+          </li>
         ))}
       </ul>
-    </CardContent>
-  </Card>
-);
+    </motion.div>
+  );
+};
 
 export function FeaturesSection() {
+  const sectionRef = React.useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+
   const features = [
     {
-      icon: <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />,
-      title: "Поддержка казахского языка",
+      icon: <Globe className="h-5 w-5" />,
+      title: "ПОДДЕРЖКА КАЗАХСКОГО ЯЗЫКА",
       description:
         "Специализированная модель обучена на многочасовых записях казахской речи",
       points: [
@@ -64,8 +84,8 @@ export function FeaturesSection() {
       ],
     },
     {
-      icon: <UserRound className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />,
-      title: "Диаризация дикторов",
+      icon: <UserRound className="h-5 w-5" />,
+      title: "ДИАРИЗАЦИЯ ДИКТОРОВ",
       description:
         "Автоматическое определение и различение говорящих в аудиозаписи",
       points: [
@@ -75,8 +95,8 @@ export function FeaturesSection() {
       ],
     },
     {
-      icon: <BarChart2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />,
-      title: "Анализ эмоций",
+      icon: <BarChart2 className="h-5 w-5" />,
+      title: "АНАЛИЗ ЭМОЦИЙ",
       description: "Определение эмоционального оттенка речи каждого говорящего",
       points: [
         "Распознавание 7 базовых эмоций",
@@ -85,8 +105,8 @@ export function FeaturesSection() {
       ],
     },
     {
-      icon: <Youtube className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />,
-      title: "YouTube транскрипция",
+      icon: <Youtube className="h-5 w-5" />,
+      title: "YOUTUBE ТРАНСКРИПЦИЯ",
       description: "Автоматическое преобразование речи из видео в текст",
       points: [
         "Поддержка ссылок с любой платформы YouTube",
@@ -95,8 +115,8 @@ export function FeaturesSection() {
       ],
     },
     {
-      icon: <FileAudio className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />,
-      title: "Поддержка форматов",
+      icon: <FileAudio className="h-5 w-5" />,
+      title: "ПОДДЕРЖКА ФОРМАТОВ",
       description: "Работа с любыми аудио и видео форматами",
       points: [
         "MP3, WAV, FLAC, OGG для аудио",
@@ -105,8 +125,8 @@ export function FeaturesSection() {
       ],
     },
     {
-      icon: <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />,
-      title: "Форматы экспорта",
+      icon: <FileText className="h-5 w-5" />,
+      title: "ФОРМАТЫ ЭКСПОРТА",
       description: "Гибкие настройки вывода результатов распознавания",
       points: [
         "TXT, PDF, DOCX для текста",
@@ -117,24 +137,68 @@ export function FeaturesSection() {
   ];
 
   return (
-    <section className="w-full py-8 sm:py-12 md:py-24 bg-muted/30">
-      <div className="container px-4 md:px-6 mx-auto">
-        <div className="flex flex-col items-center justify-center space-y-3 sm:space-y-4 text-center mb-6 sm:mb-10">
-          <div className="inline-flex h-6 items-center rounded-full border border-primary/20 bg-primary/5 px-3 text-sm font-medium text-primary">
-            Возможности
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tighter md:text-4xl">
-            Полный набор инструментов для работы с казахской речью
-          </h2>
-          <p className="max-w-[700px] text-sm sm:text-base text-muted-foreground md:text-lg">
+    <section
+      ref={sectionRef}
+      className="relative w-full py-16 sm:py-24 md:py-32 bg-white overflow-hidden"
+    >
+      {/* Swiss Grid Overlay */}
+      <div className="absolute inset-0 opacity-[0.02]">
+        <div
+          className="h-full w-full"
+          style={{
+            backgroundImage: `
+            linear-gradient(to right, #000 1px, transparent 1px),
+            linear-gradient(to bottom, #000 1px, transparent 1px)
+          `,
+            backgroundSize: "24px 24px",
+          }}
+        />
+      </div>
+
+      <div className="container relative z-10 px-6 mx-auto max-w-7xl">
+        <div className="flex flex-col mb-16">
+          {/* Swiss-style badge */}
+          <motion.div
+            className="inline-flex items-center border-2 border-black bg-black text-white px-4 py-2 text-xs font-mono uppercase tracking-wider w-fit mb-6"
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <span>ВОЗМОЖНОСТИ</span>
+          </motion.div>
+
+          <motion.h2
+            className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-black font-mono mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            ПОЛНЫЙ НАБОР
+            <br />
+            ИНСТРУМЕНТОВ
+          </motion.h2>
+
+          <motion.div
+            className="h-1 w-16 bg-black mb-6"
+            initial={{ width: 0 }}
+            animate={isInView ? { width: 64 } : { width: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          />
+
+          <motion.p
+            className="text-lg font-mono text-black/80 max-w-2xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
             Whisper UI предлагает современные технологии распознавания речи с
             учетом особенностей казахского языка
-          </p>
+          </motion.p>
         </div>
 
-        <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-full lg:max-w-7xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
-            <FeatureCard key={index} {...feature} />
+            <FeatureCard key={index} {...feature} index={index} />
           ))}
         </div>
       </div>
