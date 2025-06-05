@@ -2,15 +2,17 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Loader2, LogIn } from "lucide-react";
+import { Eye, EyeOff, Loader2, LogIn, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { observer } from "mobx-react-lite";
 
 // UI components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Card,
   CardContent,
@@ -23,19 +25,25 @@ import {
 // Custom hooks and components
 import { useHapticFeedback } from "@/components/ui/haptics";
 import { AuthPanel } from "@/components/auth/auth-panel";
+import { useRootStore } from "@/providers/StoreProvider";
 
-// Types
-import type { SignInCredentials } from "@/lib/auth-types";
+// Validation
+import { SignInSchema, type SignInFormData } from "@/lib/validations";
 
-export default function SignIn() {
-  // State management
-  const [credentials, setCredentials] = useState<SignInCredentials>({
-    usernameOrEmail: "",
+const SignIn = observer(() => {
+  // Store access
+  const { authStore } = useRootStore();
+
+  // Local state
+  const [credentials, setCredentials] = useState<SignInFormData>({
+    username: "",
     password: "",
-    rememberMe: false,
   });
+  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
 
   const router = useRouter();
   const haptics = useHapticFeedback();
@@ -44,30 +52,58 @@ export default function SignIn() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCredentials((prev) => ({ ...prev, [name]: value }));
+
+    // Clear validation error when user starts typing
+    if (validationErrors[name]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const handleCheckboxChange = (checked: boolean) => {
-    setCredentials((prev) => ({ ...prev, rememberMe: checked }));
+    setRememberMe(checked);
   };
 
   // Form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     haptics.trigger("click");
 
+    // Clear previous validation errors
+    setValidationErrors({});
+
+    // Validate form data
     try {
-      // Simulate API call - replace with actual auth API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      // Authentication logic would go here
-      haptics.trigger("success");
-      // Redirect to dashboard on success
-      router.push("/dashboard");
+      SignInSchema.parse(credentials);
+    } catch (error) {
+      if (error instanceof Error) {
+        haptics.trigger("error");
+        const zodError = JSON.parse(error.message);
+        const errors: Record<string, string> = {};
+        zodError.forEach((err: any) => {
+          errors[err.path[0]] = err.message;
+        });
+        setValidationErrors(errors);
+        return;
+      }
+    }
+
+    try {
+      const success = await authStore.signIn(credentials);
+
+      if (success) {
+        haptics.trigger("success");
+        // Redirect to dashboard or intended destination
+        router.push("/tools");
+      } else {
+        haptics.trigger("error");
+      }
     } catch (error) {
       haptics.trigger("error");
       console.error("Authentication failed:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -89,28 +125,33 @@ export default function SignIn() {
 
         <CardContent className="px-8">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {" "}
             <div className="space-y-2">
               <Label
-                htmlFor="usernameOrEmail"
+                htmlFor="username"
                 className="text-sm font-medium text-foreground"
               >
-                Имя пользователя или Email
+                Имя пользователя
               </Label>
               <motion.div whileTap={{ scale: 0.99 }} className="group">
                 <Input
-                  id="usernameOrEmail"
-                  name="usernameOrEmail"
+                  id="username"
+                  name="username"
                   type="text"
-                  placeholder="например, ivanivanov или ivan@example.com"
-                  value={credentials.usernameOrEmail}
+                  placeholder="например, ivanivanov"
+                  value={credentials.username}
                   onChange={handleChange}
                   required
                   className="h-11 px-4 border-input rounded-lg focus:border-primary focus:ring focus:ring-primary/20 focus:ring-opacity-50 transition-all bg-muted/50 focus:bg-background"
                   autoComplete="username"
                 />
+                {validationErrors.username && (
+                  <p className="text-sm text-destructive mt-1">
+                    {validationErrors.username}
+                  </p>
+                )}
               </motion.div>
             </div>
-
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label
@@ -138,6 +179,11 @@ export default function SignIn() {
                   className="h-11 px-4 border-input rounded-lg focus:border-primary focus:ring focus:ring-primary/20 focus:ring-opacity-50 transition-all bg-muted/50 focus:bg-background pr-10"
                   autoComplete="current-password"
                 />
+                {validationErrors.password && (
+                  <p className="text-sm text-destructive mt-1">
+                    {validationErrors.password}
+                  </p>
+                )}
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
@@ -149,12 +195,11 @@ export default function SignIn() {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </motion.div>
-            </div>
-
+            </div>{" "}
             <div className="flex items-center space-x-2 pt-1">
               <Checkbox
                 id="rememberMe"
-                checked={credentials.rememberMe}
+                checked={rememberMe}
                 onCheckedChange={handleCheckboxChange}
                 className="h-4 w-4 rounded border-input text-primary focus:ring-primary"
               />
@@ -165,20 +210,26 @@ export default function SignIn() {
                 Запомнить меня на 30 дней
               </label>
             </div>
-
+            {/* Display auth error */}
+            {authStore.error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{authStore.error}</AlertDescription>
+              </Alert>
+            )}{" "}
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="pt-3"
-              onTap={() => !isLoading && haptics.trigger("click")}
+              onTap={() => !authStore.isLoading && haptics.trigger("click")}
             >
               <Button
                 type="submit"
                 className="w-full h-11 bg-sidebar-primary hover:bg-sidebar-primary/90 text-sidebar-primary-foreground font-semibold rounded-lg text-base transition-all shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-sidebar-primary/50 focus:ring-offset-2 disabled:opacity-60 disabled:pointer-events-none"
-                disabled={isLoading}
+                disabled={authStore.isLoading}
                 aria-live="polite"
               >
-                {isLoading ? (
+                {authStore.isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Вход...
@@ -200,9 +251,11 @@ export default function SignIn() {
             >
               Зарегистрироваться
             </Link>
-          </p>
+          </p>{" "}
         </CardFooter>
       </Card>
     </AuthPanel>
   );
-}
+});
+
+export default SignIn;

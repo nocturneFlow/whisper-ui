@@ -2,7 +2,7 @@ import { AudioFormat, AudioMetadata, AudioQuality } from "@/types/audio";
 
 export interface TranscribeDemoRequest {
   file: File;
-  language: "kk" | "ru" | "en";
+  language?: "kk" | "ru" | "en"; // Made optional with '?'
   task: "transcribe" | "translate";
   enable_diarization: boolean;
   audioFormat?: AudioFormat;

@@ -33,8 +33,8 @@ export function AuthPanel({
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
-        <InteractiveBg />
-        <FloatingElements />
+        {/* <InteractiveBg /> */}
+        {/* <FloatingElements /> */}
 
         <motion.div
           className="relative z-10 text-center max-w-md"
@@ -53,7 +53,6 @@ export function AuthPanel({
         <div className="absolute top-10 left-10 w-24 h-24 bg-sidebar-accent/20 rounded-full filter blur-xl"></div>
         <div className="absolute bottom-10 right-10 w-32 h-32 bg-sidebar-accent/20 rounded-full filter blur-xl"></div>
       </motion.div>
-
       {/* Right side panel */}
       <div className="w-full lg:w-1/2 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <motion.div
